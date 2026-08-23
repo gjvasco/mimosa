@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Mimosa Alelí",
   description:
-    "Bisutería, velas aromáticas y aceites esenciales.",
+    "Bisutería, velas aromáticas y aceites esenciales",
 };
 
 const geistSans = Geist({
@@ -26,16 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+    <html
+      lang="es"
+      suppressHydrationWarning
+    >
+      <body
+        className={`${geistSans.className} antialiased`}
+      >
+        {children}
       </body>
     </html>
   );
