@@ -32,7 +32,21 @@ export async function getProducts() {
     throw new Error(error.message);
   }
 
-  return data;
+  return (data || []).map((product) => {
+    const categoriesArray = product.categories;
+    const category = Array.isArray(categoriesArray)
+      ? categoriesArray[0]
+      : (categoriesArray || null);
+
+    return {
+      ...product,
+      categories: category ? {
+        id: category.id,
+        name: category.name,
+        slug: category.slug
+      } : null
+    };
+  });
 }
 
 export async function getCategories() {

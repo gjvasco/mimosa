@@ -38,7 +38,21 @@ export async function getAdminProducts() {
         throw new Error(error.message);
     }
 
-    return data;
+    return (data || []).map((product) => {
+        const categoriesArray = product.categories;
+        const category = Array.isArray(categoriesArray)
+            ? categoriesArray[0]
+            : (categoriesArray || null);
+
+        return {
+            ...product,
+            categories: category ? {
+                id: category.id,
+                name: category.name,
+                slug: category.slug
+            } : null
+        };
+    });
 }
 
 
@@ -82,5 +96,19 @@ export async function getAdminProduct(id: number) {
         throw new Error(error.message);
     }
 
-    return data;
+    if (!data) return null;
+
+    const categoriesArray = data.categories;
+    const category = Array.isArray(categoriesArray)
+        ? categoriesArray[0]
+        : (categoriesArray || null);
+
+    return {
+        ...data,
+        categories: category ? {
+            id: category.id,
+            name: category.name,
+            slug: category.slug
+        } : null
+    };
 }

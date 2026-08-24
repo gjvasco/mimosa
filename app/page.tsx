@@ -1,54 +1,42 @@
-import { getProducts } from "@/lib/data/products";
-import ProductCard from "@/components/ProductCard";
+import { Suspense } from "react";
+import { getProducts, getCategories } from "@/lib/data/products";
+import ProductCatalog from "@/components/ProductCatalog";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import CatalogSkeleton from "@/components/CatalogSkeleton";
 
-export default async function ProductosPage() {
-  const products = await getProducts();
+async function CatalogData() {
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
 
+  return <ProductCatalog products={products} categories={categories} />;
+}
+
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Encabezado */}
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            Mimosa Alelí
-          </h1>
+    <main className="min-h-screen bg-background text-foreground flex flex-col justify-between">
+      <div>
+        <Navbar />
 
-          <p className="mt-2 text-gray-600">
-            Bisutería · Velas aromáticas · Aceites esenciales
-          </p>
-        </div>
-      </header>
-
-      {/* Contenido */}
-      <div className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Nuestros productos
-          </h2>
-
-          <p className="mt-1 text-sm text-gray-600">
-            Encuentra algo especial para ti o para regalar.
-          </p>
-        </div>
-
-        {/* Productos */}
-        {products.length === 0 ? (
-          <div className="rounded-2xl border bg-white p-10 text-center">
-            <p className="text-gray-500">
-              En este momento no tenemos productos disponibles.
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+          <div className="mb-6">
+            <h2 className="font-brand text-2xl font-bold text-brand sm:text-3xl md:text-4xl">
+              Nuestros productos
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+              Encuentra algo especial para ti o para regalar.
             </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
-            ))}
-          </div>
-        )}
+
+          <Suspense fallback={<CatalogSkeleton />}>
+            <CatalogData />
+          </Suspense>
+        </div>
       </div>
+
+      <Footer />
     </main>
   );
 }

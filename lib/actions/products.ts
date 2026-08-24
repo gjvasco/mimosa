@@ -1,3 +1,5 @@
+"use server";
+
 import { createClient } from "@/lib/supabase/server";
 
 export async function getAdminProduct(productId: number) {
@@ -40,5 +42,45 @@ export async function getAdminProduct(productId: number) {
         );
     }
 
-    return data;
+    if (!data) return null;
+
+    const categoriesArray = data.categories;
+    const category = Array.isArray(categoriesArray)
+        ? categoriesArray[0]
+        : (categoriesArray || null);
+
+    return {
+        ...data,
+        categories: category ? {
+            id: category.id,
+            name: category.name,
+            slug: category.slug
+        } : null
+    };
+}
+
+export async function toggleProductAvailability(
+    productId: number,
+    available: boolean
+) {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error("Usuario no autenticado.");
+    }
+
+    const { error } = await supabase
+        .from("products")
+        .update({ available })
+        .eq("id", productId);
+
+    if (error) {
+        throw new Error(
+            `No se pudo actualizar la disponibilidad del producto: ${error.message}`
+        );
+    }
 }

@@ -1,46 +1,42 @@
-import {
-    getProducts,
-    getCategories,
-} from "@/lib/data/products";
-
+import { Suspense } from "react";
+import { getProducts, getCategories } from "@/lib/data/products";
 import ProductCatalog from "@/components/ProductCatalog";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import CatalogSkeleton from "@/components/CatalogSkeleton";
 
-export default async function ProductosPage() {
-    const [products, categories] = await Promise.all([
-        getProducts(),
-        getCategories(),
-    ]);
+async function CatalogData() {
+  const [products, categories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
 
-    return (
-        <main className="min-h-screen bg-gray-50">
-            <header className="border-b bg-white">
-                <div className="mx-auto max-w-6xl px-4 py-8 text-center">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                        Mimosa Alelí
-                    </h1>
+  return <ProductCatalog products={products} categories={categories} />;
+}
 
-                    <p className="mt-2 text-gray-600">
-                        Bisutería · Velas aromáticas · Aceites esenciales
-                    </p>
-                </div>
-            </header>
+export default function ProductosPage() {
+  return (
+    <main className="min-h-screen bg-background text-foreground flex flex-col justify-between">
+      <div>
+        <Navbar />
 
-            <div className="mx-auto max-w-6xl px-4 py-8">
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        Nuestros productos
-                    </h2>
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+          <div className="mb-6">
+            <h2 className="font-brand text-2xl font-bold text-brand sm:text-3xl md:text-4xl">
+              Nuestros productos
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+              Encuentra algo especial para ti o para regalar.
+            </p>
+          </div>
 
-                    <p className="mt-1 text-sm text-gray-600">
-                        Encuentra algo especial para ti o para regalar.
-                    </p>
-                </div>
+          <Suspense fallback={<CatalogSkeleton />}>
+            <CatalogData />
+          </Suspense>
+        </div>
+      </div>
 
-                <ProductCatalog
-                    products={products}
-                    categories={categories}
-                />
-            </div>
-        </main>
-    );
+      <Footer />
+    </main>
+  );
 }

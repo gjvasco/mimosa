@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -19,18 +19,22 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  display: "swap",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      suppressHydrationWarning
-    >
+    <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.className} antialiased`}
+        className={`${geistSans.variable} ${cormorant.variable} ${geistSans.className} antialiased`}
       >
         {children}
       </body>
