@@ -15,8 +15,8 @@ export default function Footer() {
 
   const whatsappUrl = phone
     ? `https://wa.me/${phone}?text=${encodeURIComponent(
-        "Hola 👋, me gustaría información sobre sus productos de Mimosa Alelí ✨"
-      )}`
+      "Hola 👋, me gustaría información sobre sus productos de Mimosa Alelí ✨"
+    )}`
     : "#";
 
   return (
