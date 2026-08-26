@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { siteUrl } from "@/lib/utils";
 
 type Product = {
   id: number;
@@ -52,6 +53,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
   const phone = rawPhone.replace(/\D/g, "");
 
+  const productUrl = `${siteUrl}/producto/${product.slug}`;
+
   const message = [
     "Hola 👋",
     "",
@@ -59,6 +62,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     "",
     `✨ ${product.name}`,
     `💰 ${price}`,
+    `🔗 ${productUrl}`,
     "",
     "¿Me pueden dar más información?",
   ].join("\n");

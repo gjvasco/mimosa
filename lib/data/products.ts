@@ -69,3 +69,48 @@ export async function getCategories() {
 
   return data;
 }
+
+export async function getProductBySlug(slug: string) {
+  cacheTag("products");
+
+  const { data, error } = await supabasePublic
+    .from("products")
+    .select(`
+            id,
+            name,
+            slug,
+            description,
+            price,
+            available,
+            featured,
+            image_url,
+            categories (
+                id,
+                name,
+                slug
+            )
+        `)
+    .eq("slug", slug)
+    .eq("available", true)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) return null;
+
+  const categoriesArray = data.categories;
+  const category = Array.isArray(categoriesArray)
+    ? categoriesArray[0]
+    : (categoriesArray || null);
+
+  return {
+    ...data,
+    categories: category ? {
+      id: category.id,
+      name: category.name,
+      slug: category.slug
+    } : null
+  };
+}
