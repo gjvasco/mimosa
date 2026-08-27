@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoutButton } from "@/components/logout-button";
 import { getAdminProducts } from "@/lib/data/admin/products";
 import ToggleProductButton from "@/components/admin/ToggleProductButton";
 
@@ -29,12 +30,15 @@ export default async function AdminProductsPage() {
                         </p>
                     </div>
 
-                    <Link
-                        href="/admin/productos/nuevo"
-                        className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
-                    >
-                        + Nuevo producto
-                    </Link>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                        <Link
+                            href="/admin/productos/nuevo"
+                            className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+                        >
+                            + Nuevo producto
+                        </Link>
+                        <LogoutButton variant="outline" className="rounded-xl px-5 py-3 h-auto" />
+                    </div>
 
                 </div>
 

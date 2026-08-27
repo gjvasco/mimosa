@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoutButton } from "@/components/logout-button";
 
 export const instant = false;
 
@@ -8,18 +9,21 @@ export default function AdminPage() {
             <div className="mx-auto max-w-5xl">
 
                 {/* Encabezado */}
-                <div className="mb-8">
-                    <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
-                        Mimosa Alelí
-                    </p>
+                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
+                            Mimosa Alelí
+                        </p>
 
-                    <h1 className="mt-1 text-3xl font-bold text-gray-900">
-                        Administración
-                    </h1>
+                        <h1 className="mt-1 text-3xl font-bold text-gray-900">
+                            Administración
+                        </h1>
 
-                    <p className="mt-2 text-gray-600">
-                        Gestiona fácilmente los productos de tu catálogo.
-                    </p>
+                        <p className="mt-2 text-gray-600">
+                            Gestiona fácilmente los productos de tu catálogo.
+                        </p>
+                    </div>
+                    <LogoutButton variant="destructive" />
                 </div>
 
                 {/* Opciones principales */}
