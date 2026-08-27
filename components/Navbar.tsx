@@ -66,7 +66,7 @@ export default function Navbar() {
               className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold text-brand transition hover:bg-brand-light sm:px-4 sm:py-2 sm:text-sm"
             >
               <Instagram className="h-4 w-4" />
-              <span>@mimosa_aleli_</span>
+              <span className="hidden sm:inline">@mimosa_aleli_</span>
             </a>
 
             <a
