@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { revalidateCatalog } from "@/lib/actions/products";
 
 type Category = {
     id: number;
@@ -459,6 +460,8 @@ export default function ProductForm({
              * 7. REGRESAR
              * =================================================
              */
+
+            await revalidateCatalog();
 
             router.push("/admin/productos");
             router.refresh();

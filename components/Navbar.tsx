@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Instagram } from "lucide-react";
 
 export default function Navbar() {
   const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
@@ -58,12 +59,15 @@ export default function Navbar() {
 
           {/* NAVEGACIÓN EN LA DERECHA */}
           <nav className="flex shrink-0 items-center gap-1.5 sm:gap-3 z-10">
-            <Link
-              href="/productos"
-              className="rounded-full px-2.5 py-1.5 text-xs font-bold text-brand transition hover:bg-brand-light sm:px-4 sm:py-2 sm:text-sm"
+            <a
+              href="https://instagram.com/mimosa_aleli_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-bold text-brand transition hover:bg-brand-light sm:px-4 sm:py-2 sm:text-sm"
             >
-              Catálogo
-            </Link>
+              <Instagram className="h-4 w-4" />
+              <span>@mimosa_aleli_</span>
+            </a>
 
             <a
               href={whatsappUrl}

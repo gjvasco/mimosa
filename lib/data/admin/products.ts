@@ -1,4 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
+import type { User } from "@supabase/supabase-js";
+
+function requireAdmin(user: User | null) {
+    if (!user) {
+        throw new Error("Usuario no autenticado");
+    }
+
+    const adminEmailsEnv = process.env.ADMIN_EMAILS || "";
+    const adminEmails = adminEmailsEnv
+        .split(",")
+        .map((email) => email.trim().toLowerCase());
+
+    if (!user.email || !adminEmails.includes(user.email.toLowerCase())) {
+        throw new Error("Acceso denegado: Se requieren permisos de administrador");
+    }
+}
 
 export async function getAdminProducts() {
     const supabase = await createClient();
@@ -7,9 +23,7 @@ export async function getAdminProducts() {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        throw new Error("Usuario no autenticado");
-    }
+    requireAdmin(user);
 
     const { data, error } = await supabase
         .from("products")
@@ -66,9 +80,7 @@ export async function getAdminProduct(id: number) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        throw new Error("Usuario no autenticado");
-    }
+    requireAdmin(user);
 
     const { data, error } = await supabase
         .from("products")

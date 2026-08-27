@@ -1,62 +1,22 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { User } from "@supabase/supabase-js";
 
-export async function getAdminProduct(productId: number) {
-    const supabase = await createClient();
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
+function requireAdmin(user: User | null) {
     if (!user) {
-        throw new Error("Usuario no autenticado.");
+        throw new Error("Usuario no autenticado");
     }
 
-    const { data, error } = await supabase
-        .from("products")
-        .select(`
-            id,
-            category_id,
-            name,
-            slug,
-            description,
-            price,
-            image_url,
-            available,
-            featured,
-            created_at,
-            updated_at,
-            categories (
-                id,
-                name,
-                slug
-            )
-        `)
-        .eq("id", productId)
-        .single();
+    const adminEmailsEnv = process.env.ADMIN_EMAILS || "";
+    const adminEmails = adminEmailsEnv
+        .split(",")
+        .map((email) => email.trim().toLowerCase());
 
-    if (error) {
-        throw new Error(
-            `No se pudo obtener el producto: ${error.message}`
-        );
+    if (!user.email || !adminEmails.includes(user.email.toLowerCase())) {
+        throw new Error("Acceso denegado: Se requieren permisos de administrador");
     }
-
-    if (!data) return null;
-
-    const categoriesArray = data.categories;
-    const category = Array.isArray(categoriesArray)
-        ? categoriesArray[0]
-        : (categoriesArray || null);
-
-    return {
-        ...data,
-        categories: category ? {
-            id: category.id,
-            name: category.name,
-            slug: category.slug
-        } : null
-    };
 }
 
 export async function toggleProductAvailability(
@@ -69,9 +29,7 @@ export async function toggleProductAvailability(
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-        throw new Error("Usuario no autenticado.");
-    }
+    requireAdmin(user);
 
     const { error } = await supabase
         .from("products")
@@ -83,4 +41,27 @@ export async function toggleProductAvailability(
             `No se pudo actualizar la disponibilidad del producto: ${error.message}`
         );
     }
+
+    // @ts-expect-error - Next.js 15 canary types may incorrectly require 2 arguments
+    revalidateTag("products");
+}
+
+/**
+ * Limpia la caché del catálogo público (productos y categorías)
+ * para que los cambios hechos desde el admin se vean de inmediato
+ * en /productos y /, sin esperar al próximo despliegue.
+ */
+export async function revalidateCatalog() {
+    const supabase = await createClient();
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    requireAdmin(user);
+
+    // @ts-expect-error
+    revalidateTag("products");
+    // @ts-expect-error
+    revalidateTag("categories");
 }

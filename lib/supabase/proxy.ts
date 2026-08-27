@@ -61,6 +61,23 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Verificación de Roles (Admin)
+  if (user && pathname.startsWith("/admin")) {
+    const adminEmailsEnv = process.env.ADMIN_EMAILS || "";
+    const adminEmails = adminEmailsEnv
+      .split(",")
+      .map((email) => email.trim().toLowerCase());
+
+    // En getClaims(), el email suele venir en user.email
+    const userEmail = typeof user.email === 'string' ? user.email.toLowerCase() : "";
+
+    if (!userEmail || !adminEmails.includes(userEmail)) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+  }
+
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
   // 1. Pass the request in it, like so:
