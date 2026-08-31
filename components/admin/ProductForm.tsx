@@ -17,6 +17,8 @@ type Product = {
     slug: string;
     description: string | null;
     price: number;
+    show_price?: boolean | null;
+    custom_price_label?: string | null;
     available: boolean;
     featured: boolean;
     image_url: string | null;
@@ -57,6 +59,14 @@ export default function ProductForm({
 
     const [featured, setFeatured] = useState(
         product?.featured ?? false
+    );
+
+    const [showPrice, setShowPrice] = useState(
+        product?.show_price ?? true
+    );
+
+    const [customPriceLabel, setCustomPriceLabel] = useState(
+        product?.custom_price_label ?? ""
     );
 
     const [image, setImage] = useState<File | null>(null);
@@ -179,20 +189,31 @@ export default function ProductForm({
             return;
         }
 
-        if (!price || Number(price) < 0) {
-            setError(
-                "Debes ingresar un precio válido."
-            );
-            return;
-        }
-
-        const numericPrice = Number(price);
-
-        if (!Number.isFinite(numericPrice)) {
-            setError(
-                "El precio ingresado no es válido."
-            );
-            return;
+        let numericPrice = 0;
+        if (showPrice) {
+            if (!price || Number(price) < 0) {
+                setError(
+                    "Debes ingresar un precio válido."
+                );
+                return;
+            }
+            numericPrice = Number(price);
+            if (!Number.isFinite(numericPrice)) {
+                setError(
+                    "El precio ingresado no es válido."
+                );
+                return;
+            }
+        } else {
+            if (price) {
+                numericPrice = Number(price);
+                if (Number(price) < 0 || !Number.isFinite(numericPrice)) {
+                    setError(
+                        "El precio ingresado no es válido."
+                    );
+                    return;
+                }
+            }
         }
 
         const slug = generateSlug(name);
@@ -337,6 +358,8 @@ export default function ProductForm({
                         description:
                             description.trim() || null,
                         price: numericPrice,
+                        show_price: showPrice,
+                        custom_price_label: showPrice ? null : (customPriceLabel.trim() || null),
                         image_url: imageUrl,
                         available,
                         featured,
@@ -381,6 +404,8 @@ export default function ProductForm({
                         description:
                             description.trim() || null,
                         price: numericPrice,
+                        show_price: showPrice,
+                        custom_price_label: showPrice ? null : (customPriceLabel.trim() || null),
                         image_url: imageUrl,
                         available,
                         featured,
@@ -598,7 +623,7 @@ export default function ProductForm({
                                 id="price"
                                 type="number"
                                 min="0"
-                                step="1000"
+                                step="1"
                                 value={price}
                                 onChange={(e) =>
                                     setPrice(
@@ -610,6 +635,58 @@ export default function ProductForm({
                                 className="w-full rounded-xl border px-8 py-3 outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900 disabled:bg-gray-100"
                             />
                         </div>
+                    </div>
+
+                    {/* Opciones de visualización de precio */}
+                    <div className="space-y-4 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
+                        <label className="flex cursor-pointer items-start gap-3">
+                            <input
+                                type="checkbox"
+                                checked={showPrice}
+                                onChange={(e) => setShowPrice(e.target.checked)}
+                                disabled={isSaving}
+                                className="mt-1 h-5 w-5 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+                            />
+                            <div>
+                                <span className="block text-sm font-medium text-gray-900">
+                                    Mostrar precio en catálogo
+                                </span>
+                                <span className="block text-xs text-gray-500">
+                                    Si se desactiva, se ocultará el precio numérico y se mostrará un texto personalizado (o "Pregúntanos por el valor" por defecto).
+                                </span>
+                            </div>
+                        </label>
+
+                        {!showPrice && (
+                            <div className="mt-3">
+                                <label
+                                    htmlFor="customPriceLabel"
+                                    className="block text-xs font-semibold uppercase tracking-wider text-gray-700"
+                                >
+                                    Texto de precio personalizado
+                                </label>
+                                <input
+                                    id="customPriceLabel"
+                                    type="text"
+                                    value={customPriceLabel}
+                                    onChange={(e) => setCustomPriceLabel(e.target.value)}
+                                    placeholder="Ej: Pregúntanos por el valor, Precio por persona: $80.000, etc."
+                                    disabled={isSaving}
+                                    className="mt-2 w-full rounded-xl border bg-white px-4 py-2.5 text-sm outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900 disabled:bg-gray-100"
+                                />
+                            </div>
+                        )}
+
+                        {/* Ayuda visual e información si la categoría es Bienestar */}
+                        {categories.find(c => c.id.toString() === categoryId)?.slug === "bienestar" && (
+                            <div className="mt-3 rounded-lg bg-amber-50/60 p-3 text-xs text-amber-800 border border-amber-100 flex items-start gap-2">
+                                <span className="text-base select-none">💡</span>
+                                <div>
+                                    <strong className="font-semibold block mb-0.5">Categoría Bienestar seleccionada:</strong>
+                                    Dado que en Bienestar los precios varían según si es por persona o por grupo, puedes desactivar "Mostrar precio en catálogo" y usar un texto como <em>"Pregúntanos por el valor"</em> o <em>"$80.000 por persona"</em> para evitar malos entendidos.
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Descripción */}

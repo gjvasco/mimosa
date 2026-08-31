@@ -176,14 +176,20 @@ export default async function AdminProductsPage() {
                                         </h3>
 
                                         <p className="mt-2 text-lg font-bold text-gray-900">
-                                            {new Intl.NumberFormat(
-                                                "es-CO",
-                                                {
-                                                    style: "currency",
-                                                    currency: "COP",
-                                                    maximumFractionDigits: 0,
-                                                }
-                                            ).format(product.price)}
+                                            {product.show_price !== false ? (
+                                                new Intl.NumberFormat(
+                                                    "es-CO",
+                                                    {
+                                                        style: "currency",
+                                                        currency: "COP",
+                                                        maximumFractionDigits: 0,
+                                                    }
+                                                ).format(product.price)
+                                            ) : (
+                                                <span className="text-sm font-normal text-amber-600 italic">
+                                                    {product.custom_price_label || "Pregúntanos por el valor"} (Precio Oculto)
+                                                </span>
+                                            )}
                                         </p>
 
                                         {/* Estado */}

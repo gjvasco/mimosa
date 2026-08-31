@@ -8,6 +8,8 @@ type Product = {
   slug: string;
   description: string | null;
   price: number;
+  show_price?: boolean | null;
+  custom_price_label?: string | null;
   available: boolean;
   featured: boolean;
   image_url?: string | null;
@@ -23,11 +25,13 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
-  const price = new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(product.price);
+  const priceDisplay = product.show_price !== false
+    ? new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0,
+      }).format(product.price)
+    : (product.custom_price_label || "Pregúntanos por el valor");
 
   const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
   const phone = rawPhone.replace(/\D/g, "");
@@ -40,7 +44,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
     "Estoy interesado(a) en este producto de Mimosa Alelí:",
     "",
     `✨ ${product.name}`,
-    `💰 ${price}`,
+    `💰 ${priceDisplay}`,
     `🔗 ${productUrl}`,
     "",
     "¿Me pueden dar más información?",
@@ -206,7 +210,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         {/* PRECIO */}
         <div className="mt-auto pt-3">
           <p className="text-sm sm:text-base font-extrabold text-brand">
-            {price}
+            {priceDisplay}
           </p>
         </div>
 

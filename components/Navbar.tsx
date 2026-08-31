@@ -53,7 +53,7 @@ export default function Navbar() {
               Mimosa Alelí
             </h1>
             <p className="truncate text-[8px] sm:text-[10px] md:text-[11px] font-bold tracking-[0.18em] text-amber uppercase mt-0.5 sm:mt-1">
-              ACCESORIOS · VELAS · ESENCIAS
+              ACCESORIOS · VELAS · ESENCIAS · BIENESTAR
             </p>
           </Link>
 

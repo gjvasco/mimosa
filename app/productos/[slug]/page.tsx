@@ -28,11 +28,13 @@ export async function generateMetadata(
         };
     }
 
-    const price = new Intl.NumberFormat("es-CO", {
-        style: "currency",
-        currency: "COP",
-        maximumFractionDigits: 0,
-    }).format(product.price);
+    const price = product.show_price !== false
+        ? new Intl.NumberFormat("es-CO", {
+            style: "currency",
+            currency: "COP",
+            maximumFractionDigits: 0,
+        }).format(product.price)
+        : (product.custom_price_label || "Pregúntanos por el valor");
 
     const title = `${product.name} — Mimosa Alelí`;
     const description = product.description
@@ -66,11 +68,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         notFound();
     }
 
-    const price = new Intl.NumberFormat("es-CO", {
-        style: "currency",
-        currency: "COP",
-        maximumFractionDigits: 0,
-    }).format(product.price);
+    const price = product.show_price !== false
+        ? new Intl.NumberFormat("es-CO", {
+            style: "currency",
+            currency: "COP",
+            maximumFractionDigits: 0,
+        }).format(product.price)
+        : (product.custom_price_label || "Pregúntanos por el valor");
 
     return (
         <main className="min-h-screen bg-background px-4 py-8 sm:px-6 sm:py-10">

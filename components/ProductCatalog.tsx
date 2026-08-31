@@ -18,6 +18,8 @@ type Product = {
   slug: string;
   description: string | null;
   price: number;
+  show_price?: boolean | null;
+  custom_price_label?: string | null;
   available: boolean;
   featured: boolean;
   image_url?: string | null;

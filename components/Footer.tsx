@@ -41,7 +41,7 @@ export default function Footer() {
         </p>
 
         <p className="mt-1 text-xs font-bold tracking-[0.2em] text-amber uppercase">
-          ACCESORIOS · VELAS · ESENCIAS
+          ACCESORIOS · VELAS · ESENCIAS · BIENESTAR
         </p>
 
         {/* NAVEGACIÓN Y CONTACTO */}

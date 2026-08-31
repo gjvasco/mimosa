@@ -25,6 +25,33 @@ export async function getAdminProducts() {
 
     requireAdmin(user);
 
+    // Ensure 'Bienestar' category exists
+    try {
+        const { data: existing } = await supabase
+            .from("categories")
+            .select("id")
+            .eq("slug", "bienestar")
+            .maybeSingle();
+
+        if (!existing) {
+            const { error: insertError } = await supabase
+                .from("categories")
+                .insert({
+                    name: "Bienestar",
+                    slug: "bienestar",
+                    sort_order: 7,
+                    active: true
+                });
+            if (insertError) {
+                console.error("Failed to insert Bienestar category:", insertError.message);
+            } else {
+                console.log("Successfully inserted Bienestar category");
+            }
+        }
+    } catch (e) {
+        console.error("Failed to seed Bienestar category:", e);
+    }
+
     const { data, error } = await supabase
         .from("products")
         .select(`
@@ -33,6 +60,8 @@ export async function getAdminProducts() {
             slug,
             description,
             price,
+            show_price,
+            custom_price_label,
             available,
             featured,
             image_url,
@@ -90,6 +119,8 @@ export async function getAdminProduct(id: number) {
             slug,
             description,
             price,
+            show_price,
+            custom_price_label,
             available,
             featured,
             image_url,
