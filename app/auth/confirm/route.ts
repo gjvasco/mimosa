@@ -9,6 +9,9 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type") as EmailOtpType | null;
   const next = searchParams.get("next") ?? "/";
 
+  // Validar que sea una ruta interna (previene Open Redirect)
+  const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
+
   if (token_hash && type) {
     const supabase = await createClient();
 
@@ -17,14 +20,11 @@ export async function GET(request: NextRequest) {
       token_hash,
     });
     if (!error) {
-      // redirect user to specified redirect URL or root of app
-      redirect(next);
+      redirect(safeNext);
     } else {
-      // redirect the user to an error page with some instructions
-      redirect(`/auth/error?error=${error?.message}`);
+      redirect(`/auth/error?error=${encodeURIComponent(error?.message ?? "Error de verificación")}`);
     }
   }
 
-  // redirect the user to an error page with some instructions
-  redirect(`/auth/error?error=No token hash or type`);
+  redirect(`/auth/error?error=${encodeURIComponent("No se encontró token de verificación")}`);
 }

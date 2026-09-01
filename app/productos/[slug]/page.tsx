@@ -33,7 +33,7 @@ export async function generateMetadata(
             style: "currency",
             currency: "COP",
             maximumFractionDigits: 0,
-        }).format(product.price)
+        }).format(Math.round(product.price))
         : (product.custom_price_label || "Pregúntanos por el valor");
 
     const title = `${product.name} — Mimosa Alelí`;
@@ -73,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             style: "currency",
             currency: "COP",
             maximumFractionDigits: 0,
-        }).format(product.price)
+        }).format(Math.round(product.price))
         : (product.custom_price_label || "Pregúntanos por el valor");
 
     return (

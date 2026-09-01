@@ -49,6 +49,13 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
+  // Bloquear registro público — los admins se crean desde Supabase Dashboard
+  if (pathname.startsWith("/auth/sign-up")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    return NextResponse.redirect(url);
+  }
+
   const isPublicRoute =
     pathname === "/" ||
     pathname.startsWith("/auth") ||
