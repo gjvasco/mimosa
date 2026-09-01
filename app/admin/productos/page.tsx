@@ -184,7 +184,7 @@ export default async function AdminProductsPage() {
                                                         currency: "COP",
                                                         maximumFractionDigits: 0,
                                                     }
-                                                ).format(product.price)
+                                                ).format(Math.round(product.price))
                                             ) : (
                                                 <span className="text-sm font-normal text-amber-600 italic">
                                                     {product.custom_price_label || "Pregúntanos por el valor"} (Precio Oculto)

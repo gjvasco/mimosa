@@ -47,7 +47,7 @@ export default function ProductForm({
         product?.categories?.id?.toString() ?? ""
     );
     const [price, setPrice] = useState(
-        product?.price?.toString() ?? ""
+        product?.price != null ? Math.round(product.price).toString() : ""
     );
     const [description, setDescription] = useState(
         product?.description ?? ""
@@ -197,7 +197,7 @@ export default function ProductForm({
                 );
                 return;
             }
-            numericPrice = Number(price);
+            numericPrice = Math.round(Number(price));
             if (!Number.isFinite(numericPrice)) {
                 setError(
                     "El precio ingresado no es válido."
@@ -206,7 +206,7 @@ export default function ProductForm({
             }
         } else {
             if (price) {
-                numericPrice = Number(price);
+                numericPrice = Math.round(Number(price));
                 if (Number(price) < 0 || !Number.isFinite(numericPrice)) {
                     setError(
                         "El precio ingresado no es válido."

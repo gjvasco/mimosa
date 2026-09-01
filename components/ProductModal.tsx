@@ -51,7 +51,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
         style: "currency",
         currency: "COP",
         maximumFractionDigits: 0,
-      }).format(product.price)
+      }).format(Math.round(product.price))
     : (product.custom_price_label || "Pregúntanos por el valor");
 
   const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
