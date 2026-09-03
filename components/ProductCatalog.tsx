@@ -65,12 +65,13 @@ export default function ProductCatalog({
 
   return (
     <section className="min-w-0">
-      {/* BUSCADOR Y FILTROS */}
-      <div className="mb-6 space-y-4">
-        {/* Buscador */}
+      {/* BUSCADOR (Se desplaza normalmente) */}
+      <div className="mb-4">
         <SearchBar value={search} onChange={setSearch} />
+      </div>
 
-        {/* Categorías */}
+      {/* CATEGORÍAS STICKY (Permanece visible bajo la Navbar) */}
+      <div className="sticky top-[64px] sm:top-[80px] z-30 -mx-4 px-4 sm:mx-0 sm:px-0 py-2.5 bg-background/95 backdrop-blur-md border-b border-border/40 shadow-xs mb-6 transition-all">
         <CategoryFilter
           categories={categories}
           selectedCategory={selectedCategory}

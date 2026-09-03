@@ -30,7 +30,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         style: "currency",
         currency: "COP",
         maximumFractionDigits: 0,
-      }).format(Math.round(product.price))
+      }).format(Math.round(Number(product.price)))
     : (product.custom_price_label || "Pregúntanos por el valor");
 
   const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";

@@ -47,7 +47,7 @@ export default function ProductForm({
         product?.categories?.id?.toString() ?? ""
     );
     const [price, setPrice] = useState(
-        product?.price != null ? Math.round(product.price).toString() : ""
+        product?.price != null ? String(Number(product.price)) : ""
     );
     const [description, setDescription] = useState(
         product?.description ?? ""
@@ -191,13 +191,14 @@ export default function ProductForm({
 
         let numericPrice = 0;
         if (showPrice) {
-            if (!price || Number(price) < 0) {
+            const parsed = parseFloat(price);
+            if (!price || isNaN(parsed) || parsed < 0) {
                 setError(
                     "Debes ingresar un precio válido."
                 );
                 return;
             }
-            numericPrice = Math.round(Number(price));
+            numericPrice = Math.round(parsed);
             if (!Number.isFinite(numericPrice)) {
                 setError(
                     "El precio ingresado no es válido."
@@ -206,13 +207,14 @@ export default function ProductForm({
             }
         } else {
             if (price) {
-                numericPrice = Math.round(Number(price));
-                if (Number(price) < 0 || !Number.isFinite(numericPrice)) {
+                const parsed = parseFloat(price);
+                if (isNaN(parsed) || parsed < 0) {
                     setError(
                         "El precio ingresado no es válido."
                     );
                     return;
                 }
+                numericPrice = Math.round(parsed);
             }
         }
 
